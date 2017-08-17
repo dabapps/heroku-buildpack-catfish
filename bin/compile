@@ -40,11 +40,8 @@ SELECTED_ENVIRONMENT=${CATFISH_ENVIRONMENT:-production}
 for env_dir in $BUILD_DIR/{catfish,etc/environments}/${SELECTED_ENVIRONMENT}; do
     if test -f ${env_dir}/env -a -f $ENV_DIR/?rocfile; then
         echo "Found config files in ${env_dir}"
-        cp ${env_dir}/env $BUILD_DIR/.env
         # ? matches any single character so we move either procfile or Procfile
         cp ${env_dir}/?rocfile $BUILD_DIR/Procfile 
-        # export the environment variables from the file to later buildpacks
-        sed 's/^/export /' ${env_dir}/env > "$BIN_DIR/../export"
         # set the environment variables from the file as defaults in the slug
         # uses the 'buildpack standard library' function https://github.com/heroku/buildpack-stdlib/blob/bff46f46fdd1d1cf4285ae0384ee42df8fa94414/stdlib.sh#L75-L80
         while read -ra line < ${env_dir}/env; do
