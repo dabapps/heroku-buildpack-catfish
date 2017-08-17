@@ -5,10 +5,7 @@
 set -e
 
 # The standard library. We use it later to set-default-env.
-if [[ ! -f  /tmp/stdlib.sh ]]; then
-  curl --retry 3 -s https://lang-common.s3.amazonaws.com/buildpack-stdlib/v4/stdlib.sh > /tmp/stdlib.sh
-fi
-source /tmp/stdlib.sh
+source /dev/stdin <<< "$(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib/v4/stdlib.sh)"
 # end standard library init.
 
 # we can use the buildpack standard library to export the environment
