@@ -28,7 +28,7 @@ for ENV_DIR in $BUILD_DIR/{catfish,etc/environments}/${SELECTED_ENVIRONMENT}; do
     if test -f $ENV_DIR/env -a -f $ENV_DIR/procfile; then
         echo "Found config files in $ENV_DIR"
         cp $ENV_DIR/env $BUILD_DIR/.env
-		# ? matches any single character so we move either procfile or Procfile
+        # ? matches any single character so we move either procfile or Procfile
         cp $ENV_DIR/?rocfile $BUILD_DIR/Procfile 
         sed 's/^/export /' $ENV_DIR/env > "$BIN_DIR/../export"
         exit 0
