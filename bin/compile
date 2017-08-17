@@ -11,19 +11,8 @@ fi
 source /tmp/stdlib.sh
 # end standard library init.
 
-export_env_dir() {
-  env_dir=$3
-  blacklist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
-  if [ -d "$env_dir" ]; then
-    for e in $(ls $env_dir); do
-      echo "$e" | grep -qvE "$blacklist_regex" &&
-      export "$e=$(cat $env_dir/$e)"
-      :
-    done
-  fi
-}
-
-export_env_dir $@
+# we can use the buildpack standard library to export the environment
+export-env $3
 
 BIN_DIR=$(cd $(dirname $0); pwd)
 BUILD_DIR=$1
