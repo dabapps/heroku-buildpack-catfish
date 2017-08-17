@@ -4,21 +4,24 @@
 
 set -e
 
-# The standard library. We use it later to set-default-env.
-source /dev/stdin <<< "$(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib/v4/stdlib.sh)"
+# The standard library. We use it later to set_default_env.
+if [[ ! -f  /tmp/stdlib.sh ]]; then
+  curl --retry 3 -s https://lang-common.s3.amazonaws.com/buildpack-stdlib/v4/stdlib.sh > /tmp/stdlib.sh
+fi
+source /tmp/stdlib.sh
 # end standard library init.
 
 # we can use the buildpack standard library to export the environment
-export-env $3
+export_env $3
 
 BIN_DIR=$(cd $(dirname $0); pwd)
 BUILD_DIR=$1
 
-# required for set-default-env, cribbed from the python buildpack
+# required for set_default_env, cribbed from the python buildpack
 PROFILE_PATH="$BUILD_DIR/.profile.d/catfish.sh"
 EXPORT_PATH="$BIN_DIR/../export"
 export PROFILE_PATH EXPORT_PATH
-# end required for set-default-env
+# end required for set_default_env
 
 # The default environment is production
 SELECTED_ENVIRONMENT=${CATFISH_ENVIRONMENT:-production}
@@ -32,7 +35,7 @@ for env_dir in $BUILD_DIR/{catfish,etc/environments}/${SELECTED_ENVIRONMENT}; do
         # uses the 'buildpack standard library' function https://github.com/heroku/buildpack-stdlib/blob/bff46f46fdd1d1cf4285ae0384ee42df8fa94414/stdlib.sh#L75-L80
         while read -ra line < ${env_dir}/env; do
             IFS='=' read -ra key value <<< "${line}"
-            set-default-env ${key} ${value}
+            set_default_env ${key} ${value}
         done
         exit 0
     fi
