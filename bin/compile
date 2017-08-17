@@ -36,3 +36,6 @@ for ENV_DIR in $BUILD_DIR/{catfish,etc/environments}/${SELECTED_ENVIRONMENT}; do
 done
 echo "No acceptable environment found for ${SELECTED_ENVIRONMENT}"
 exit 1
+
+# set python version from .python-version
+[ -f .python-version ] && echo -n python > runtime.txt && grep '[0-9.]*' .python-version >> runtime.txt
