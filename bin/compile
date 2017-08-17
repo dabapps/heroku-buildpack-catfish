@@ -1,20 +1,34 @@
 #!/usr/bin/env bash
 
+[ "$BUILDPACK_XTRACE" ] && set -o xtrace
+
 set -e
 
-[ "$BUILDPACK_XTRACE" ] && set -o xtrace
+export_env_dir() {
+  env_dir=$3
+  blacklist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
+  if [ -d "$env_dir" ]; then
+    for e in $(ls $env_dir); do
+      echo "$e" | grep -qvE "$blacklist_regex" &&
+      export "$e=$(cat $env_dir/$e)"
+      :
+    done
+  fi
+}
+
+export_env_dir $@
 
 BIN_DIR=$(cd $(dirname $0); pwd)
 BUILD_DIR=$1
 
-for ENV_DIR in $BUILD_DIR/{catfish,etc/environments}/{heroku,production}; do
-    if test -f $ENV_DIR/env -a -f $ENV_DIR/procfile; then
-        echo "Found config files in $ENV_DIR"
-        cp $ENV_DIR/env $BUILD_DIR/.env
-        cp $ENV_DIR/procfile $BUILD_DIR/Procfile
-        sed 's/^/export /' $ENV_DIR/env > "$BIN_DIR/../export"
-        exit 0
-    fi
-done
-echo "No acceptable environment found"
-exit 1
+ENV_DIR=${CATFISH_ENVIRONMENT:-production}
+if test -f $ENV_DIR/env -a -f $ENV_DIR/procfile; then
+	echo "Found config files in $ENV_DIR"
+	cp $ENV_DIR/env $BUILD_DIR/.env
+	cp $ENV_DIR/procfile $BUILD_DIR/Procfile
+	sed 's/^/export /' $ENV_DIR/env > "$BIN_DIR/../export"
+	exit 0
+else
+	echo "No acceptable environment found"
+	exit 1
+fi
