@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [ -d $1/etc/environments -o -d $1/catfish ]; then
+    echo "Catfish"
+    exit 0
+else
+    echo "No catfish config directories"
+    exit 1
+fi
