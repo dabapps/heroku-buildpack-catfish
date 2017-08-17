@@ -25,7 +25,7 @@ BUILD_DIR=$1
 SELECTED_ENVIRONMENT=${CATFISH_ENVIRONMENT:-production}
 
 for ENV_DIR in $BUILD_DIR/{catfish,etc/environments}/${SELECTED_ENVIRONMENT}; do
-    if test -f $ENV_DIR/env -a -f $ENV_DIR/procfile; then
+    if test -f $ENV_DIR/env -a -f $ENV_DIR/?rocfile; then
         echo "Found config files in $ENV_DIR"
         cp $ENV_DIR/env $BUILD_DIR/.env
         # ? matches any single character so we move either procfile or Procfile
