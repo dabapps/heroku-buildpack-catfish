@@ -21,6 +21,7 @@ export_env $3
 BIN_DIR=$(cd $(dirname $0); pwd)
 BUILD_DIR=$1
 BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
+os=$(get_os)
 export JQ="$BP_DIR/vendor/jq-$os"
 
 # required for set_default_env, cribbed from the python buildpack
