@@ -4,6 +4,10 @@
 
 set -e
 
+get_os() {
+  uname | tr A-Z a-z
+}
+
 # The standard library. We use it later to set_default_env.
 if [[ ! -f  /tmp/stdlib-v4.sh ]]; then
   curl --retry 3 -s https://lang-common.s3.amazonaws.com/buildpack-stdlib/v4/stdlib.sh > /tmp/stdlib-v4.sh
@@ -16,6 +20,9 @@ export_env $3
 
 BIN_DIR=$(cd $(dirname $0); pwd)
 BUILD_DIR=$1
+BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
+os=$(get_os)
+export JQ="$BP_DIR/vendor/jq-$os"
 
 # required for set_default_env, cribbed from the python buildpack
 PROFILE_PATH="$BUILD_DIR/.profile.d/catfish.sh"
@@ -46,3 +53,6 @@ exit 1
 
 # set python version from .python-version
 [ -f .python-version ] && echo -n python > runtime.txt && grep '[0-9.]*' .python-version >> runtime.txt
+
+# automate nvm + postinstall hook for node build
+[ -f .nvmrc ] && ($JQ '{engines: {node: $version}, scripts: {postinstall: "npm run build"} * .' --arg version $(cat .nvmrc) < package.json > package.json.updated) && mv package.json{.updated,}
