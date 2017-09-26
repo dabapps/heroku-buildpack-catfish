@@ -2,6 +2,8 @@
 
 [ "$BUILDPACK_XTRACE" ] && set -o xtrace
 
+echo "using branch of buildpack"
+
 set -e
 
 get_os() {
