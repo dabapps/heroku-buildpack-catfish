@@ -54,7 +54,7 @@ for env_dir in $BUILD_DIR/{catfish,etc/environments}/${SELECTED_ENVIRONMENT}; do
         # set python version from .python-version
         if test -f $BUILD_DIR/.python-version; then
             echo "populating runtime.txt with correct python version"
-            echo -n python > $BUILD_DIR/runtime.txt
+            echo -n python- > $BUILD_DIR/runtime.txt
             grep '[0-9.]*' $BUILD_DIR/.python-version >> $BUILD_DIR/runtime.txt
         fi
 
