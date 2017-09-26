@@ -58,4 +58,4 @@ exit 1
 [ -f .python-version ] && echo -n python > runtime.txt && grep '[0-9.]*' .python-version >> runtime.txt
 
 # automate nvm + postinstall hook for node build
-[ -f .nvmrc ] && ($JQ '{engines: {node: $version}, scripts: {postinstall: "npm run build"}} * .' --arg version $(cat .nvmrc) < package.json > package.json.updated) && mv package.json{.updated,}
+[ -f .nvmrc ] && ($JQ '{engines: {node: $version}, scripts: {postinstall: "npm run build"}} * .' --arg version $(cat .nvmrc) < package.json > package.json.updated) && mv package.json.updated $1/package.json
