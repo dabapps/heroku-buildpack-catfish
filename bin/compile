@@ -50,22 +50,25 @@ for env_dir in $BUILD_DIR/{catfish,etc/environments}/${SELECTED_ENVIRONMENT}; do
                 set_default_env ${key} ${value}
             done < ${env_dir}/env
         fi
+        
+        # set python version from .python-version
+        if test -f .python-version; then
+            echo "populating runtime.txt with correct python version"
+            echo -n python > runtime.txt
+            grep '[0-9.]*' .python-version >> $BUILD_DIR/runtime.txt
+        fi
+
+        # automate nvm + postinstall hook for node build
+        if test -f .nvmrc; then
+            echo "adjusting package.json"
+            $JQ '{engines: {node: $version}, scripts: {postinstall: "npm run build"}} * .' --arg version $(cat .nvmrc) < package.json > package.json.updated
+            mv package.json.updated $BUILD_DIR/package.json
+        fi
+
         exit 0
     fi
 done
 echo "No acceptable environment found for ${SELECTED_ENVIRONMENT}"
 exit 1
 
-# set python version from .python-version
-if test -f .python-version; then
-    echo "populating runtime.txt with correct python version"
-    echo -n python > runtime.txt
-    grep '[0-9.]*' .python-version >> $BUILD_DIR/runtime.txt
-fi
 
-# automate nvm + postinstall hook for node build
-if test -f .nvmrc; then
-    echo "adjusting package.json"
-    $JQ '{engines: {node: $version}, scripts: {postinstall: "npm run build"}} * .' --arg version $(cat .nvmrc) < package.json > package.json.updated
-    mv package.json.updated $BUILD_DIR/package.json
-fi
