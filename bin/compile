@@ -52,17 +52,17 @@ for env_dir in $BUILD_DIR/{catfish,etc/environments}/${SELECTED_ENVIRONMENT}; do
         fi
         
         # set python version from .python-version
-        if test -f .python-version; then
+        if test -f $BUILD_DIR/.python-version; then
             echo "populating runtime.txt with correct python version"
-            echo -n python > runtime.txt
-            grep '[0-9.]*' .python-version >> $BUILD_DIR/runtime.txt
+            echo -n python > $BUILD_DIR/runtime.txt
+            grep '[0-9.]*' $BUILD_DIR/.python-version >> $BUILD_DIR/runtime.txt
         fi
 
         # automate nvm + postinstall hook for node build
-        if test -f .nvmrc; then
+        if test -f $BUILD_DIR/.nvmrc; then
             echo "adjusting package.json"
-            $JQ '{engines: {node: $version}, scripts: {postinstall: "npm run build"}} * .' --arg version $(cat .nvmrc) < package.json > package.json.updated
-            mv package.json.updated $BUILD_DIR/package.json
+            $JQ '{engines: {node: $version}, scripts: {postinstall: "npm run build"}} * .' --arg version $(cat $BUILD_DIR/.nvmrc) < $BUILD_DIR/package.json > $BUILD_DIR/package.json.updated
+            mv $BUILD_DIR/package.json.updated $BUILD_DIR/package.json
         fi
 
         exit 0
