@@ -45,7 +45,7 @@ for env_dir in $BUILD_DIR/{catfish,etc/environments}/${SELECTED_ENVIRONMENT}; do
             # uses the 'buildpack standard library' function https://github.com/heroku/buildpack-stdlib/blob/bff46f46fdd1d1cf4285ae0384ee42df8fa94414/stdlib.sh#L75-L80
             while read line; do
                 IFS='=' read key value <<< "${line}"
-                set_default_env ${key} ${value}
+                set_default_env "${key}" "${value}"
             done < ${env_dir}/env
         fi
         exit 0
