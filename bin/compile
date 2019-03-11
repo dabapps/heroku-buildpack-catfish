@@ -59,7 +59,7 @@ for env_dir in $BUILD_DIR/{catfish,etc/environments}/${SELECTED_ENVIRONMENT}; do
         # automate nvm + postinstall hook for node build
         if test -f $BUILD_DIR/.nvmrc; then
             echo "adjusting package.json"
-            $JQ '{engines: {node: $version}, scripts: {postinstall: "npm run build"}} * .' --arg version $(cat $BUILD_DIR/.nvmrc) < $BUILD_DIR/package.json > $BUILD_DIR/package.json.updated
+            $JQ '{engines: {node: $version}} * .' --arg version $(cat $BUILD_DIR/.nvmrc) < $BUILD_DIR/package.json > $BUILD_DIR/package.json.updated
             mv $BUILD_DIR/package.json.updated $BUILD_DIR/package.json
         fi
 
